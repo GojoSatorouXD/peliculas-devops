@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><title>Películas</title></head>
+<body>
+  <h1>Gestión de Películas</h1>
+
+  <h2>Agregar película</h2>
+  <form method="POST" action="/peliculas">
+    <input name="titulo" placeholder="Título" required>
+    <input name="director" placeholder="Director" required>
+    <input name="genero" placeholder="Género" required>
+    <input name="anio" type="number" placeholder="Año" required>
+    <button type="submit">Guardar</button>
+  </form>
+
+  <h2>Listado</h2>
+  <table border="1" cellpadding="5">
+    <tr><th>ID</th><th>Título</th><th>Director</th><th>Género</th><th>Año</th><th>Acciones</th></tr>
+    <% peliculas.forEach(p => { %>
+      <tr>
+        <td><%= p.id %></td>
+        <td><%= p.titulo %></td>
+        <td><%= p.director %></td>
+        <td><%= p.genero %></td>
+        <td><%= p.anio %></td>
+        <td>
+          <a href="/peliculas/<%= p.id %>/editar">Editar</a>
+          <form method="POST" action="/peliculas/<%= p.id %>/eliminar" style="display:inline">
+            <button type="submit">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</body>
+</html>
