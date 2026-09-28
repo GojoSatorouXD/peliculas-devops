@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><title>Editar película</title></head>
+<body>
+  <h1>Editar película</h1>
+  <form method="POST" action="/peliculas/<%= pelicula.id %>/editar">
+    <input name="titulo" value="<%= pelicula.titulo %>" required>
+    <input name="director" value="<%= pelicula.director %>" required>
+    <input name="genero" value="<%= pelicula.genero %>" required>
+    <input name="anio" type="number" value="<%= pelicula.anio %>" required>
+    <button type="submit">Actualizar</button>
+  </form>
+  <a href="/">Volver</a>
+</body>
+</html>
