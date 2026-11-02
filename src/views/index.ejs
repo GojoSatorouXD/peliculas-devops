@@ -22,13 +22,19 @@
         <option value="<%= g %>" <%= g === genero ? 'selected' : '' %>><%= g %></option>
       <% }) %>
     </select>
+    <select name="estado">
+      <option value="">Todos los estados</option>
+      <% estados.forEach(e => { %>
+        <option value="<%= e %>" <%= e === estado ? 'selected' : '' %>><%= e %></option>
+      <% }) %>
+    </select>
     <button type="submit">Buscar</button>
     <a href="/">Limpiar</a>
   </form>
 
   <h2>Listado</h2>
   <table border="1" cellpadding="5">
-    <tr><th>ID</th><th>Título</th><th>Director</th><th>Género</th><th>Año</th><th>Acciones</th></tr>
+    <tr><th>ID</th><th>Título</th><th>Director</th><th>Género</th><th>Año</th><th>Estado</th><th>Acciones</th></tr>
     <% peliculas.forEach(p => { %>
       <tr>
         <td><%= p.id %></td>
@@ -36,8 +42,12 @@
         <td><%= p.director %></td>
         <td><%= p.genero %></td>
         <td><%= p.anio %></td>
+        <td><%= p.estado %></td>
         <td>
           <a href="/peliculas/<%= p.id %>/editar">Editar</a>
+          <form method="POST" action="/peliculas/<%= p.id %>/estado" style="display:inline">
+            <button type="submit"><%= p.estado === 'vista' ? 'Marcar pendiente' : 'Marcar vista' %></button>
+          </form>
           <form method="POST" action="/peliculas/<%= p.id %>/eliminar" style="display:inline">
             <button type="submit">Eliminar</button>
           </form>
@@ -45,7 +55,7 @@
       </tr>
     <% }) %>
     <% if (peliculas.length === 0) { %>
-      <tr><td colspan="6">Sin resultados</td></tr>
+      <tr><td colspan="7">Sin resultados</td></tr>
     <% } %>
   </table>
 </body>
