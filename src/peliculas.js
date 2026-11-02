@@ -1,3 +1,9 @@
+const ESTADOS = ['pendiente', 'vista'];
+
+function esEstadoValido(estado) {
+  return ESTADOS.includes(estado);
+}
+
 // Valida los datos de una película. Devuelve una lista de errores (vacía si todo está bien).
 function validarPelicula(datos = {}) {
   const errores = [];
@@ -15,7 +21,7 @@ function validarPelicula(datos = {}) {
 }
 
 // Construye la cláusula WHERE y sus parámetros para buscar y filtrar películas.
-function construirFiltro({ q = '', genero = '' } = {}) {
+function construirFiltro({ q = '', genero = '', estado = '' } = {}) {
   const condiciones = [];
   const params = [];
 
@@ -31,8 +37,14 @@ function construirFiltro({ q = '', genero = '' } = {}) {
     condiciones.push(`genero = $${params.length}`);
   }
 
+  const e = String(estado).trim();
+  if (esEstadoValido(e)) {
+    params.push(e);
+    condiciones.push(`estado = $${params.length}`);
+  }
+
   const where = condiciones.length ? `WHERE ${condiciones.join(' AND ')}` : '';
   return { where, params };
 }
 
-module.exports = { validarPelicula, construirFiltro };
+module.exports = { ESTADOS, esEstadoValido, validarPelicula, construirFiltro };

@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const pool = require('./db');
-const { validarPelicula, construirFiltro } = require('./peliculas');
+const { ESTADOS, validarPelicula, construirFiltro } = require('./peliculas');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -10,13 +10,20 @@ app.use(express.urlencoded({ extended: true }));
 
 const wrap = (fn) => (req, res, next) => fn(req, res).catch(next);
 
-// READ (listar, con búsqueda y filtro por género)
+// READ (listar, con búsqueda y filtros por género y estado)
 app.get('/', wrap(async (req, res) => {
-  const { q = '', genero = '' } = req.query;
-  const { where, params } = construirFiltro({ q, genero });
+  const { q = '', genero = '', estado = '' } = req.query;
+  const { where, params } = construirFiltro({ q, genero, estado });
   const { rows } = await pool.query(`SELECT * FROM peliculas ${where} ORDER BY id`, params);
   const { rows: filas } = await pool.query('SELECT DISTINCT genero FROM peliculas ORDER BY genero');
-  res.render('index', { peliculas: rows, generos: filas.map((f) => f.genero), q, genero });
+  res.render('index', {
+    peliculas: rows,
+    generos: filas.map((f) => f.genero),
+    estados: ESTADOS,
+    q,
+    genero,
+    estado,
+  });
 }));
 
 // CREATE
@@ -46,6 +53,17 @@ app.post('/peliculas/:id/editar', wrap(async (req, res) => {
   await pool.query(
     'UPDATE peliculas SET titulo=$1, director=$2, genero=$3, anio=$4 WHERE id=$5',
     [titulo, director, genero, anio, req.params.id]
+  );
+  res.redirect('/');
+}));
+
+// Cambiar el estado: pendiente <-> vista
+app.post('/peliculas/:id/estado', wrap(async (req, res) => {
+  await pool.query(
+    `UPDATE peliculas
+     SET estado = CASE WHEN estado = 'vista' THEN 'pendiente' ELSE 'vista' END
+     WHERE id = $1`,
+    [req.params.id]
   );
   res.redirect('/');
 }));
