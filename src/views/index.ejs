@@ -13,6 +13,19 @@
     <button type="submit">Guardar</button>
   </form>
 
+  <h2>Buscar y filtrar</h2>
+  <form method="GET" action="/">
+    <input name="q" placeholder="Título o director" value="<%= q %>">
+    <select name="genero">
+      <option value="">Todos los géneros</option>
+      <% generos.forEach(g => { %>
+        <option value="<%= g %>" <%= g === genero ? 'selected' : '' %>><%= g %></option>
+      <% }) %>
+    </select>
+    <button type="submit">Buscar</button>
+    <a href="/">Limpiar</a>
+  </form>
+
   <h2>Listado</h2>
   <table border="1" cellpadding="5">
     <tr><th>ID</th><th>Título</th><th>Director</th><th>Género</th><th>Año</th><th>Acciones</th></tr>
@@ -31,6 +44,9 @@
         </td>
       </tr>
     <% }) %>
+    <% if (peliculas.length === 0) { %>
+      <tr><td colspan="6">Sin resultados</td></tr>
+    <% } %>
   </table>
 </body>
 </html>
