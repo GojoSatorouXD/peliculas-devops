@@ -9,7 +9,7 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
 });
 
-// Crea la tabla si no existe
+// Crea la tabla si no existe y agrega la columna estado a tablas creadas antes
 pool.initDb = async () => {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS peliculas (
@@ -17,8 +17,13 @@ pool.initDb = async () => {
       titulo VARCHAR(150) NOT NULL,
       director VARCHAR(100) NOT NULL,
       genero VARCHAR(50) NOT NULL,
-      anio INTEGER NOT NULL
+      anio INTEGER NOT NULL,
+      estado VARCHAR(20) NOT NULL DEFAULT 'pendiente'
     )
+  `);
+  await pool.query(`
+    ALTER TABLE peliculas
+    ADD COLUMN IF NOT EXISTS estado VARCHAR(20) NOT NULL DEFAULT 'pendiente'
   `);
 };
 
