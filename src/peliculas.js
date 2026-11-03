@@ -14,7 +14,7 @@ function validarPelicula(datos = {}) {
   if (!genero || !String(genero).trim()) errores.push('El género es obligatorio');
 
   const n = Number(anio);
-  if (!Number.isInteger(n) || n < 2500 || n > new Date().getFullYear() + 5) {
+  if (!Number.isInteger(n) || n < 1888 || n > new Date().getFullYear() + 5) {
     errores.push('El año no es válido');
   }
   return errores;
